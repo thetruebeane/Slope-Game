@@ -22,6 +22,10 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2541434264715219"
      crossorigin="anonymous"></script>
     <style>
+        html { height: 100%; }
+        .alert { flex: 0 0 auto; }
+        .webgl-content { flex: 1 1 auto; min-height: 0; width: 100%; position: relative; }
+        #gameContainer, #gameContainer canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
         .alert {
           padding: 20px;
           background-color: #0096FF;
@@ -53,7 +57,7 @@ https://github.com/cgolden15/Slope-Game/
 Drop a star on the repo if you enjoy.
 --->
 
-<body style="margin: 0; overflow: hidden;">
+<body style="margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; background: #231F20;">
     <div class="alert">
         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
         Want to play tetris? <a href="https://goldenn.dev/tetris/">Click here!</a> New games coming soon!
@@ -62,20 +66,13 @@ Drop a star on the repo if you enjoy.
         <div id="gameContainer" style="width: 100%; height: 100%; margin: 0;"></div>
     </div>
     <div id="dupPanel" style="position:fixed;top:60px;right:10px;z-index:10;background:rgba(0,0,0,.65);color:#fff;font:14px sans-serif;padding:8px 10px;border-radius:6px;">
-        Map copies:
-        <input id="dupCount" type="number" min="0" max="50" value="3" style="width:50px">
-        <button id="dupBtn" type="button">Duplicate map</button>
-        <label style="margin-left:8px;cursor:pointer"><input id="spamToggle" type="checkbox"> Spam Enter</label>
+        <label style="cursor:pointer"><input id="spamToggle" type="checkbox"> Spam Enter</label>
         every <input id="spamMs" type="number" min="0" max="1000" value="5" style="width:45px">ms &times;<input id="spamBurst" type="number" min="1" max="50" value="3" style="width:40px">/tick
     </div>
     <script>
         // Turns the "spam Enter" map-duplication glitch into a feature:
-        // sends exactly N Enter key presses to the game, spaced out slightly.
+        // a toggle that keeps sending Enter key presses to the game.
         (function () {
-            var input = document.getElementById("dupCount");
-            var btn = document.getElementById("dupBtn");
-            try { var saved = localStorage.getItem("slopeDupCount"); if (saved !== null) input.value = saved; } catch (e) {}
-
             function pressEnter() {
                 var targets = [document.querySelector("#gameContainer canvas"), document, window];
                 ["keydown", "keypress", "keyup"].forEach(function (type) {
@@ -101,20 +98,12 @@ Drop a star on the repo if you enjoy.
                     spamTimer = null;
                 }
             });
-
-            btn.addEventListener("click", function () {
-                var n = Math.max(0, Math.min(50, parseInt(input.value, 10) || 0));
-                input.value = n;
-                try { localStorage.setItem("slopeDupCount", n); } catch (e) {}
-                btn.blur(); // keep keyboard focus off the button so Enter isn't swallowed
-                var i = 0;
-                (function next() {
-                    if (i++ >= n) return;
-                    pressEnter();
-                    setTimeout(next, 150);
-                })();
-            });
         })();
+
+        // Make the game re-measure its container (after load, and when the banner is closed)
+        function refit() { window.dispatchEvent(new Event("resize")); }
+        window.addEventListener("load", function () { [500, 2000, 5000].forEach(function (t) { setTimeout(refit, t); }); });
+        document.querySelector(".closebtn").addEventListener("click", function () { setTimeout(refit, 50); });
     </script>
     <!-- <a title="GDPR-compliant Web Analytics" href="https://clicky.com/101393847"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a> -->
     <script async src="//static.getclicky.com/101393847.js"></script>
