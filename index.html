@@ -65,6 +65,7 @@ Drop a star on the repo if you enjoy.
         Map copies:
         <input id="dupCount" type="number" min="0" max="50" value="3" style="width:50px">
         <button id="dupBtn" type="button">Duplicate map</button>
+        <label style="margin-left:8px;cursor:pointer"><input id="spamToggle" type="checkbox"> Spam Enter</label>
     </div>
     <script>
         // Turns the "spam Enter" map-duplication glitch into a feature:
@@ -84,6 +85,19 @@ Drop a star on the repo if you enjoy.
                     t.dispatchEvent(ev);
                 });
             }
+
+            // Toggle: keeps pressing Enter repeatedly until switched off
+            var spamBox = document.getElementById("spamToggle");
+            var spamTimer = null;
+            spamBox.addEventListener("change", function () {
+                spamBox.blur();
+                if (spamBox.checked) {
+                    spamTimer = setInterval(pressEnter, 150);
+                } else {
+                    clearInterval(spamTimer);
+                    spamTimer = null;
+                }
+            });
 
             btn.addEventListener("click", function () {
                 var n = Math.max(0, Math.min(50, parseInt(input.value, 10) || 0));
