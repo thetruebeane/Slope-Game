@@ -41,7 +41,6 @@ Drop a star on the repo if you enjoy.
     </div>
     <div id="dupPanel" style="position:fixed;top:60px;right:10px;z-index:10;background:rgba(0,0,0,.65);color:#fff;font:14px sans-serif;padding:8px 10px;border-radius:6px;">
         <label style="cursor:pointer"><input id="spamToggle" type="checkbox"> Spam Enter</label>
-        every <input id="spamMs" type="number" min="0" max="1000" value="5" style="width:45px">ms &times;<input id="spamBurst" type="number" min="1" max="50" value="3" style="width:40px">/tick
     </div>
     <script>
         // Turns the "spam Enter" map-duplication glitch into a feature:
@@ -64,8 +63,7 @@ Drop a star on the repo if you enjoy.
             spamBox.addEventListener("change", function () {
                 spamBox.blur();
                 if (spamBox.checked) {
-                    var ms = Math.max(0, parseInt(document.getElementById("spamMs").value, 10) || 0);
-                    var burst = Math.max(1, parseInt(document.getElementById("spamBurst").value, 10) || 1);
+                    var ms = 5, burst = 3; // fast: 3 presses every 5 ms
                     spamTimer = setInterval(function () { for (var k = 0; k < burst; k++) pressEnter(); }, ms);
                 } else {
                     clearInterval(spamTimer);
