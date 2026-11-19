@@ -23,30 +23,8 @@
      crossorigin="anonymous"></script>
     <style>
         html { height: 100%; }
-        .alert { flex: 0 0 auto; }
         .webgl-content { flex: 1 1 auto; min-height: 0; width: 100%; position: relative; }
         #gameContainer, #gameContainer canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
-        .alert {
-          padding: 20px;
-          background-color: #0096FF;
-          color: white;
-        }
-
-        .closebtn {
-          margin-left: 15px;
-          color: white;
-          p {text-align: center;}  
-          font-weight: bold;
-          float: right;
-          font-size: 22px;
-          line-height: 20px;
-          cursor: pointer;
-          transition: 0.3s;
-        }
-
-        .closebtn:hover {
-          color: black;
-        }
     </style>
 </head>
 
@@ -58,10 +36,6 @@ Drop a star on the repo if you enjoy.
 --->
 
 <body style="margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; background: #231F20;">
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Want to play tetris? <a href="https://goldenn.dev/tetris/">Click here!</a> New games coming soon!
-    </div>
     <div class="webgl-content">
         <div id="gameContainer" style="width: 100%; height: 100%; margin: 0;"></div>
     </div>
@@ -100,10 +74,9 @@ Drop a star on the repo if you enjoy.
             });
         })();
 
-        // Make the game re-measure its container (after load, and when the banner is closed)
+        // Make the game re-measure its container after load
         function refit() { window.dispatchEvent(new Event("resize")); }
         window.addEventListener("load", function () { [500, 2000, 5000].forEach(function (t) { setTimeout(refit, t); }); });
-        document.querySelector(".closebtn").addEventListener("click", function () { setTimeout(refit, 50); });
     </script>
     <!-- <a title="GDPR-compliant Web Analytics" href="https://clicky.com/101393847"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a> -->
     <script async src="//static.getclicky.com/101393847.js"></script>
