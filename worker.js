@@ -60,51 +60,44 @@ async function getConfig(env) {
   try { const c = JSON.parse(raw); return c && c.hash && c.salt && c.secret ? c : null; } catch { return null; }
 }
 
+// Same look as the beane.ca password page (new-site/worker.js in thetruebeane/tests).
 function page(kind, { error = "", status = 200, next = "/" } = {}) {
   const setup = kind === "setup";
   const title = setup ? "Set a password" : "Password";
-  const note = setup
-    ? "First visit. Choose the password for the beane.ca test sites. It can only be set once."
-    : "This demo is private.";
+  const note = setup ? "First visit. Choose the password for the beane.ca test sites. It can only be set once." : "This site is private.";
   const fields = setup
-    ? `<label for="pw">Password</label><input id="pw" name="password" type="password" minlength="6" maxlength="256" autocomplete="new-password" required autofocus>
-       <label for="pw2">Confirm password</label><input id="pw2" name="confirm" type="password" minlength="6" maxlength="256" autocomplete="new-password" required>
-       <p class="hint">At least 6 characters.</p>`
-    : `<label for="pw">Password</label><input id="pw" name="password" type="password" maxlength="256" autocomplete="current-password" required autofocus>`;
+    ? `<label for="pw">Password</label>
+  <input id="pw" name="password" type="password" minlength="6" maxlength="256" autocomplete="new-password" required autofocus>
+  <label for="pw2" style="margin-top:.75rem">Confirm password</label>
+  <input id="pw2" name="confirm" type="password" minlength="6" maxlength="256" autocomplete="new-password" required>`
+    : `<label for="pw">Password</label>
+  <input id="pw" name="password" type="password" maxlength="256" autocomplete="current-password" required autofocus>`;
   const body = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex"><title>${esc(title)} · ${esc(SITE.name)}</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Ccircle cx=%278%27 cy=%278%27 r=%275%27 fill=%27%23ef4a2b%27/%3E%3C/svg%3E">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><title>${esc(title)}</title>
 <style>
-  :root{--fg:#fafafa;--muted:#8a8a8a;--line:rgba(255,255,255,.1);--brand:#ef4a2b;
-    --sans:"Geist","Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  :root{color-scheme:light dark;--fg:#111;--muted:#666;--bg:#fff;--field:#fff;--line:#cfcfcf;--accent:#111;--accent-fg:#fff;--err:#b3261e}
+  @media (prefers-color-scheme:dark){:root{--fg:#eee;--muted:#999;--bg:#111;--field:#181818;--line:#3a3a3a;--accent:#eee;--accent-fg:#111;--err:#ff8a80}}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{display:flex;align-items:center;justify-content:center;padding:24px;color:var(--fg);font-family:var(--sans);
-    -webkit-font-smoothing:antialiased;background-color:#0b0b0b;${SITE.bg}}
-  form{width:100%;max-width:320px}
-  .brand{font-size:15px;font-weight:600;letter-spacing:-.01em}
-  .brand small{display:block;font-size:11.5px;font-weight:400;color:var(--muted);margin-top:2px}
-  h1{font-size:20px;font-weight:600;letter-spacing:-.015em;margin:28px 0 6px}
-  .note{font-size:13px;line-height:1.45;color:#a1a1a1;margin:0 0 20px}
-  label{display:block;font:11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
-  input{width:100%;height:38px;padding:0 11px;font:14px var(--sans);color:var(--fg);background:#141414;
-    border:1px solid var(--line);border-radius:6px;outline:none}
-  input:focus{border-color:rgba(239,74,43,.7)}
-  .hint{font-size:11.5px;color:#6b6b6b;margin:6px 0 0}
-  .err{font-size:12.5px;color:#ff9b85;border-left:2px solid var(--brand);padding:2px 0 2px 9px;margin:0 0 6px}
-  button{margin-top:20px;width:100%;height:38px;font:500 13.5px var(--sans);color:#fff;background:var(--brand);
-    border:0;border-radius:6px;cursor:pointer}
-  button:hover{background:#d93f22}
+  body{display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg);color:var(--fg);
+    font-family:helvetica,arial,sans-serif;font-size:1rem;line-height:1.6}
+  form{width:100%;max-width:300px}
+  h1{font-size:1.5rem;line-height:1.2;margin:0 0 .25rem}
+  p{margin:0 0 1.25rem;color:var(--muted)}
+  label{display:block;font-size:.875rem;margin-bottom:.35rem}
+  input{width:100%;height:2.5rem;padding:0 .7rem;font:inherit;color:var(--fg);background:var(--field);border:1px solid var(--line);border-radius:4px}
+  input:focus{outline:2px solid var(--fg);outline-offset:1px;border-color:var(--fg)}
+  button{margin-top:1rem;width:100%;height:2.5rem;font:inherit;font-weight:bold;color:var(--accent-fg);background:var(--accent);border:0;border-radius:4px;cursor:pointer}
+  button:hover{opacity:.85}
+  .err{color:var(--err);margin:0 0 1rem}
 </style></head>
 <body><form method="post" action="/__auth/${setup ? "setup" : "login"}">
-  <div class="brand">${esc(SITE.name)}<small>${esc(SITE.sub)}</small></div>
-  <h1>${esc(title)}</h1><p class="note">${esc(note)}</p>
+  <h1>${esc(title)}</h1><p>${esc(note)}</p>
   ${error ? `<p class="err" role="alert">${esc(error)}</p>` : ""}
   ${fields}
   <input type="hidden" name="next" value="${esc(next)}">
-  <button type="submit">${setup ? "Set password" : "Continue"}</button>
+  <button type="submit">${setup ? "Set password" : "Enter"}</button>
 </form></body></html>`;
   return new Response(body, { status, headers: gateHeaders() });
 }
