@@ -9,3 +9,4 @@ tools
 worker.js
 package.json
 package-lock.json
+.wrangler
