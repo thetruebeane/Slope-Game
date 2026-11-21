@@ -1,8 +1,20 @@
 {
   "name": "slope-game",
+  "main": "worker.js",
+  "no_bundle": true,
+  "find_additional_modules": false,
   "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "account_id": "ecdbedc08f6476a08b98b0ca4bad0a4a",
+  // Every request goes through the password gate first; it serves the game files from ASSETS once signed in.
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": true
   },
+  // Same KV namespace as the demo sites (tests/test2/test3/test4), so they share one password.
+  "kv_namespaces": [
+    { "binding": "AUTH", "id": "ae7059d4a58a43bcafae5b931e8434a5" }
+  ],
   "previews": {}
 }

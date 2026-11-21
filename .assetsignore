@@ -4,3 +4,8 @@ README.md
 .git
 .github
 node_modules
+gate
+tools
+worker.js
+package.json
+package-lock.json
